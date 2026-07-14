@@ -164,3 +164,60 @@ class SantanderAdapter(BaseBankAdapter):
             
         response = requests.delete(url=url, headers=headers, **cert_args)
         response.raise_for_status()
+
+    def create_workspace(self, payload: dict) -> dict:
+        token = self._get_token()
+        url = f"{self.base_url}{self.route_workspaces}"
+        headers = {
+            "Authorization": f"Bearer {token}",
+            "X-Application-Key": self.credentials.client_id,
+            "Content-Type": "application/json",
+            "Accept": "*/*",
+            "Accept-Encoding": "gzip, deflate, br",
+            "Connection": "keep-alive"
+        }
+        cert = (self.cert_auth.cert_path, self.cert_auth.key_path) if self.cert_auth else None
+        verify = self.cert_auth.verify if self.cert_auth else True
+        import requests
+        response = requests.post(url, headers=headers, json=payload, cert=cert, verify=verify)
+        if response.status_code == 201:
+            return response.json()
+        raise Exception(f"Erro ao criar workspace: {response.status_code} - {response.text}")
+
+    def edit_workspace(self, workspace_id: str, payload: dict) -> dict:
+        token = self._get_token()
+        url = f"{self.base_url}{self.route_workspaces}/{workspace_id}"
+        headers = {
+            "Authorization": f"Bearer {token}",
+            "X-Application-Key": self.credentials.client_id,
+            "Content-Type": "application/json",
+            "Accept": "*/*",
+            "Accept-Encoding": "gzip, deflate, br",
+            "Connection": "keep-alive"
+        }
+        cert = (self.cert_auth.cert_path, self.cert_auth.key_path) if self.cert_auth else None
+        verify = self.cert_auth.verify if self.cert_auth else True
+        import requests
+        response = requests.patch(url, headers=headers, json=payload, cert=cert, verify=verify)
+        if response.status_code == 200:
+            return {}
+        raise Exception(f"Erro ao editar workspace: {response.status_code} - {response.text}")
+
+    def delete_workspace(self, workspace_id: str) -> None:
+        token = self._get_token()
+        url = f"{self.base_url}{self.route_workspaces}/{workspace_id}"
+        headers = {
+            "Authorization": f"Bearer {token}",
+            "X-Application-Key": self.credentials.client_id,
+            "Content-Type": "application/json",
+            "Accept": "*/*",
+            "Accept-Encoding": "gzip, deflate, br",
+            "Connection": "keep-alive"
+        }
+        cert = (self.cert_auth.cert_path, self.cert_auth.key_path) if self.cert_auth else None
+        verify = self.cert_auth.verify if self.cert_auth else True
+        import requests
+        response = requests.delete(url, headers=headers, cert=cert, verify=verify)
+        if response.status_code == 204:
+            return None
+        raise Exception(f"Erro ao deletar workspace: {response.status_code} - {response.text}")

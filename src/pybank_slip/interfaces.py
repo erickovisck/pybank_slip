@@ -29,3 +29,10 @@ class BaseBankAdapter(abc.ABC):
 
     def search_workspaces(self) -> dict:
         raise NotImplementedError
+
+    def create_workspace(self, payload: dict) -> dict:
+        raise NotImplementedError
+    def edit_workspace(self, workspace_id: str, payload: dict) -> dict:
+        raise NotImplementedError
+    def delete_workspace(self, workspace_id: str) -> None:
+        raise NotImplementedError
