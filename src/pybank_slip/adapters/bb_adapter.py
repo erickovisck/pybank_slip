@@ -92,7 +92,8 @@ class BancoDoBrasilAdapter(BaseBankAdapter):
 
     def cancel_bank_slip(self, bank_slip_id: str, payload: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         token = self._get_token()
-        url = f"{self.base_url}{self.route_bank_slips}/{bank_slip_id}/baixar"
+        app_key_qs = f"?gw-dev-app-key={self.credentials.app_key}"
+        url = f"{self.base_url}{self.route_bank_slips}{app_key_qs}/{bank_slip_id}/baixar"
         
         headers = {
             "Authorization": f"Bearer {token}",
