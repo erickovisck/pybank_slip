@@ -5,6 +5,16 @@ from ..auth import CertificateAuth, OAuthCredentials
 from requests.auth import HTTPBasicAuth
 
 class BancoDoBrasilAdapter(BaseBankAdapter):
+    def _set_urls(self):
+        if self.environment == 'sandbox':
+            self.base_url = "https://api.sandbox.bb.com.br"
+            self.token_url = "https://oauth.sandbox.bb.com.br/oauth/token"
+        else:
+            self.base_url = "https://api.bb.com.br"
+            self.token_url = "https://oauth.bb.com.br/oauth/token"
+            
+        self.route_bank_slips = "/cobrancas/v2/boletos"
+
     """
     Bank slip adapter for Banco do Brasil API V2.
     """
@@ -23,7 +33,7 @@ class BancoDoBrasilAdapter(BaseBankAdapter):
         payload = {"grant_type": "client_credentials", "scope": "cobrancas.boletos-info cobrancas.boletos-requisicao"}
         
         response = requests.post(
-            self.credentials.token_url,
+            self.token_url,
             data=payload,
             auth=HTTPBasicAuth(self.credentials.client_id, self.credentials.client_secret),
             cert=(self.cert_auth.cert_path, self.cert_auth.key_path),

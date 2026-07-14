@@ -13,6 +13,5 @@ class OAuthCredentials:
     """Holds configuration for OAuth2 token fetching."""
     client_id: str
     client_secret: str
-    token_url: str
     app_key: Optional[str] = None
     workspace_id: Optional[str] = None

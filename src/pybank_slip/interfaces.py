@@ -26,3 +26,6 @@ class BaseBankAdapter(abc.ABC):
     def edit_bank_slip(self, bank_slip_id: str, payload: Dict[str, Any]) -> Dict[str, Any]:
         """Edit an existing bank slip."""
         pass
+
+    def search_workspaces(self) -> dict:
+        raise NotImplementedError

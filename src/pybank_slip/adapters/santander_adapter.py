@@ -4,6 +4,34 @@ from ..interfaces import BaseBankAdapter
 from ..auth import OAuthCredentials, CertificateAuth
 
 class SantanderAdapter(BaseBankAdapter):
+    def _set_urls(self):
+        if self.environment == 'sandbox':
+            self.base_url = "https://api-sandbox.santander.com.br"
+            self.token_url = "https://trust-sandbox.api.santander.com.br/oauth/cert/v1/token"
+        else:
+            self.base_url = "https://api.santander.com.br"
+            self.token_url = "https://trust.api.santander.com.br/oauth/cert/v1/token"
+            
+        self.route_workspaces = "/workspaces"
+        self.route_bank_slips = "/workspaces/{workspace_id}/bank_slips"
+
+    def search_workspaces(self) -> dict:
+        token = self._get_token()
+        url = f"{self.base_url}{self.route_workspaces}"
+        headers = {
+            "Authorization": f"Bearer {token}",
+            "X-Application-Key": self.credentials.client_id,
+            "Accept": "*/*",
+            "Accept-Encoding": "gzip, deflate, br",
+        }
+        cert = (self.cert_auth.cert_path, self.cert_auth.key_path) if self.cert_auth else None
+        verify = self.cert_auth.verify if self.cert_auth else True
+        
+        response = requests.get(url, headers=headers, cert=cert, verify=verify)
+        if response.status_code == 200:
+            return response.json()
+        raise Exception(f"Santander Workspace Error {response.status_code}: {response.text}")
+
     """
     Bank slip adapter for Santander API.
     """
@@ -27,7 +55,7 @@ class SantanderAdapter(BaseBankAdapter):
             cert_args['verify'] = self.cert_auth.verify
             
         response = requests.post(
-            self.credentials.token_url,
+            self.token_url,
             data=payload,
             auth=(self.credentials.client_id, self.credentials.client_secret),
             **cert_args
