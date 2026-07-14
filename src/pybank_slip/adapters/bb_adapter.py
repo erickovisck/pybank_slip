@@ -7,8 +7,8 @@ from requests.auth import HTTPBasicAuth
 class BancoDoBrasilAdapter(BaseBankAdapter):
     def _set_urls(self):
         if self.environment == 'sandbox':
-            self.base_url = "https://api.sandbox.bb.com.br"
-            self.token_url = "https://oauth.sandbox.bb.com.br/oauth/token"
+            self.base_url = "https://api.hm.bb.com.br"
+            self.token_url = "https://oauth.hm.bb.com.br/oauth/token"
         else:
             self.base_url = "https://api.bb.com.br"
             self.token_url = "https://oauth.bb.com.br/oauth/token"
