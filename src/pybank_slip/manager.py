@@ -13,7 +13,7 @@ class BankSlipManager:
     def get_adapter(
         bank_code: str, 
         credentials: OAuthCredentials, 
-        base_url: str,
+        environment: str = 'production',
         cert_auth: Optional[CertificateAuth] = None
     ) -> BaseBankAdapter:
         """
@@ -21,7 +21,7 @@ class BankSlipManager:
         
         :param bank_code: String identifier for the bank (e.g., 'bb', 'santander').
         :param credentials: OAuthCredentials object containing client_id and secret.
-        :param base_url: Base API URL for the chosen environment (Sandbox/Production).
+        :param environment: Environment parameter ('production' or 'sandbox').
         :param cert_auth: Optional CertificateAuth for mTLS required by Banco do Brasil.
         :return: BaseBankAdapter instance.
         """
@@ -30,10 +30,10 @@ class BankSlipManager:
         if bank_code == "bb":
             if not cert_auth:
                 raise ValueError("Banco do Brasil requires CertificateAuth for mTLS.")
-            return BancoDoBrasilAdapter(credentials=credentials, base_url=base_url, cert_auth=cert_auth)
+            return BancoDoBrasilAdapter(credentials=credentials, environment=environment, cert_auth=cert_auth)
         
         elif bank_code == "santander":
-            return SantanderAdapter(credentials=credentials, base_url=base_url, cert_auth=cert_auth)
+            return SantanderAdapter(credentials=credentials, environment=environment, cert_auth=cert_auth)
             
         else:
             raise NotImplementedError(f"Bank code '{bank_code}' is not supported.")
