@@ -37,7 +37,10 @@ class SantanderAdapter(BaseBankAdapter):
     """
 
     def __init__(self, credentials: OAuthCredentials, environment: str = 'production', cert_auth: Optional[CertificateAuth] = None):
-        super().__init__(credentials, environment, cert_auth)
+        self.credentials = credentials
+        self.environment = environment.lower()
+        self.cert_auth = cert_auth
+        self._set_urls()
         self._token = None
 
     def _get_token(self) -> str:
