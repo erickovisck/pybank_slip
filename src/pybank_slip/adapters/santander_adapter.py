@@ -6,14 +6,14 @@ from ..auth import OAuthCredentials, CertificateAuth
 class SantanderAdapter(BaseBankAdapter):
     def _set_urls(self):
         if self.environment == 'sandbox':
-            self.base_url = "https://api-sandbox.santander.com.br"
+            self.base_url = "https://trust-sandbox.api.santander.com.br"
             self.token_url = "https://trust-sandbox.api.santander.com.br/oauth/cert/v1/token"
         else:
-            self.base_url = "https://api.santander.com.br"
-            self.token_url = "https://trust.api.santander.com.br/oauth/cert/v1/token"
+            self.base_url = "https://trust-open.api.santander.com.br"
+            self.token_url = "https://trust-open.api.santander.com.br/auth/oauth/v2/token"
             
-        self.route_workspaces = "/workspaces"
-        self.route_bank_slips = "/workspaces/{workspace_id}/bank_slips"
+        self.route_workspaces = "/collection_bill_management/v2/workspaces"
+        self.route_bank_slips = "/collection_bill_management/v2/workspaces/{workspace_id}/bank_slips"
 
     def search_workspaces(self) -> dict:
         token = self._get_token()
