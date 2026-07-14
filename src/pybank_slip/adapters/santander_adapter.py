@@ -1,4 +1,5 @@
 import requests
+from ..utils import safe_json_loads
 from typing import Dict, Any, Optional
 from ..interfaces import BaseBankAdapter
 from ..auth import OAuthCredentials, CertificateAuth
@@ -7,7 +8,7 @@ class SantanderAdapter(BaseBankAdapter):
     def _set_urls(self):
         if self.environment == 'sandbox':
             self.base_url = "https://trust-sandbox.api.santander.com.br"
-            self.token_url = "https://trust-sandbox.api.santander.com.br/oauth/cert/v1/token"
+            self.token_url = "https://trust-sandbox.api.santander.com.br/auth/oauth/v2/token"
         else:
             self.base_url = "https://trust-open.api.santander.com.br"
             self.token_url = "https://trust-open.api.santander.com.br/auth/oauth/v2/token"
@@ -29,7 +30,7 @@ class SantanderAdapter(BaseBankAdapter):
         
         response = requests.get(url, headers=headers, cert=cert, verify=verify)
         if response.status_code == 200:
-            return response.json()
+            return safe_json_loads(response.text)
         raise Exception(f"Santander Workspace Error {response.status_code}: {response.text}")
 
     """
@@ -71,7 +72,7 @@ class SantanderAdapter(BaseBankAdapter):
         if not workspace_id:
             raise ValueError("Workspace ID is required for Santander bank slips.")
             
-        url = f"{self.base_url}/workspaces/{workspace_id}/bank_slips"
+        url = f"{self.base_url}{self.route_bank_slips}".format(workspace_id=workspace_id)
         
         headers = {
             "Authorization": f"Bearer {token}",
@@ -87,7 +88,7 @@ class SantanderAdapter(BaseBankAdapter):
             
         response = requests.post(url=url, json=payload, headers=headers, **cert_args)
         response.raise_for_status()
-        return response.json()
+        return safe_json_loads(response.text)
 
     def list_bank_slips(self, filters: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         raise NotImplementedError("List bank slips is not yet implemented for Santander.")
@@ -98,7 +99,7 @@ class SantanderAdapter(BaseBankAdapter):
     def edit_bank_slip(self, bank_slip_id: str, payload: Dict[str, Any]) -> Dict[str, Any]:
         token = self._get_token()
         workspace_id = self.credentials.workspace_id
-        url = f"{self.base_url}/workspaces/{workspace_id}/bank_slips"
+        url = f"{self.base_url}{self.route_bank_slips}".format(workspace_id=workspace_id)
         
         headers = {
             "Authorization": f"Bearer {token}",
@@ -114,7 +115,7 @@ class SantanderAdapter(BaseBankAdapter):
             
         response = requests.patch(url=url, json=payload, headers=headers, **cert_args)
         response.raise_for_status()
-        return response.json()
+        return safe_json_loads(response.text)
 
     # Santander Specific Methods
     def register_workspace(self, payload: Dict[str, Any]) -> Dict[str, Any]:
@@ -133,7 +134,7 @@ class SantanderAdapter(BaseBankAdapter):
             
         response = requests.post(url=url, json=payload, headers=headers, **cert_args)
         response.raise_for_status()
-        return response.json()
+        return safe_json_loads(response.text)
 
     def list_workspaces(self) -> Dict[str, Any]:
         token = self._get_token()
@@ -149,7 +150,7 @@ class SantanderAdapter(BaseBankAdapter):
             
         response = requests.get(url=url, headers=headers, **cert_args)
         response.raise_for_status()
-        return response.json()
+        return safe_json_loads(response.text)
 
     def delete_workspace(self, workspace_id: str) -> None:
         token = self._get_token()
@@ -180,9 +181,10 @@ class SantanderAdapter(BaseBankAdapter):
         cert = (self.cert_auth.cert_path, self.cert_auth.key_path) if self.cert_auth else None
         verify = self.cert_auth.verify if self.cert_auth else True
         import requests
+from ..utils import safe_json_loads
         response = requests.post(url, headers=headers, json=payload, cert=cert, verify=verify)
         if response.status_code == 201:
-            return response.json()
+            return safe_json_loads(response.text)
         raise Exception(f"Erro ao criar workspace: {response.status_code} - {response.text}")
 
     def edit_workspace(self, workspace_id: str, payload: dict) -> dict:
@@ -199,6 +201,7 @@ class SantanderAdapter(BaseBankAdapter):
         cert = (self.cert_auth.cert_path, self.cert_auth.key_path) if self.cert_auth else None
         verify = self.cert_auth.verify if self.cert_auth else True
         import requests
+from ..utils import safe_json_loads
         response = requests.patch(url, headers=headers, json=payload, cert=cert, verify=verify)
         if response.status_code == 200:
             return {}
@@ -218,6 +221,7 @@ class SantanderAdapter(BaseBankAdapter):
         cert = (self.cert_auth.cert_path, self.cert_auth.key_path) if self.cert_auth else None
         verify = self.cert_auth.verify if self.cert_auth else True
         import requests
+from ..utils import safe_json_loads
         response = requests.delete(url, headers=headers, cert=cert, verify=verify)
         if response.status_code == 204:
             return None

@@ -1,4 +1,5 @@
 import requests
+from ..utils import safe_json_loads
 from typing import Dict, Any, Optional
 from ..interfaces import BaseBankAdapter
 from ..auth import CertificateAuth, OAuthCredentials
@@ -64,7 +65,7 @@ class BancoDoBrasilAdapter(BaseBankAdapter):
             verify=self.cert_auth.verify,
         )
         response.raise_for_status()
-        return response.json()
+        return safe_json_loads(response.text)
 
     def list_bank_slips(self, filters: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         token = self._get_token()
@@ -84,7 +85,7 @@ class BancoDoBrasilAdapter(BaseBankAdapter):
             verify=self.cert_auth.verify,
         )
         response.raise_for_status()
-        return response.json()
+        return safe_json_loads(response.text)
 
     def cancel_bank_slip(self, bank_slip_id: str, payload: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         token = self._get_token()
@@ -107,7 +108,7 @@ class BancoDoBrasilAdapter(BaseBankAdapter):
             verify=self.cert_auth.verify,
         )
         response.raise_for_status()
-        return response.json()
+        return safe_json_loads(response.text)
 
     def edit_bank_slip(self, bank_slip_id: str, payload: Dict[str, Any]) -> Dict[str, Any]:
         token = self._get_token()
@@ -128,4 +129,4 @@ class BancoDoBrasilAdapter(BaseBankAdapter):
             verify=self.cert_auth.verify,
         )
         response.raise_for_status()
-        return response.json()
+        return safe_json_loads(response.text)
