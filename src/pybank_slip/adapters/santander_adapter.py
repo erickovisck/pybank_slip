@@ -181,7 +181,6 @@ class SantanderAdapter(BaseBankAdapter):
         cert = (self.cert_auth.cert_path, self.cert_auth.key_path) if self.cert_auth else None
         verify = self.cert_auth.verify if self.cert_auth else True
         import requests
-from ..utils import safe_json_loads
         response = requests.post(url, headers=headers, json=payload, cert=cert, verify=verify)
         if response.status_code == 201:
             return safe_json_loads(response.text)
@@ -201,7 +200,6 @@ from ..utils import safe_json_loads
         cert = (self.cert_auth.cert_path, self.cert_auth.key_path) if self.cert_auth else None
         verify = self.cert_auth.verify if self.cert_auth else True
         import requests
-from ..utils import safe_json_loads
         response = requests.patch(url, headers=headers, json=payload, cert=cert, verify=verify)
         if response.status_code == 200:
             return {}
@@ -221,7 +219,6 @@ from ..utils import safe_json_loads
         cert = (self.cert_auth.cert_path, self.cert_auth.key_path) if self.cert_auth else None
         verify = self.cert_auth.verify if self.cert_auth else True
         import requests
-from ..utils import safe_json_loads
         response = requests.delete(url, headers=headers, cert=cert, verify=verify)
         if response.status_code == 204:
             return None
