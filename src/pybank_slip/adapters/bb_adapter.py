@@ -41,7 +41,8 @@ class BancoDoBrasilAdapter(BaseBankAdapter):
             cert=(self.cert_auth.cert_path, self.cert_auth.key_path),
             verify=self.cert_auth.verify,
         )
-        response.raise_for_status()
+        if response.status_code >= 400:
+            raise Exception(f"HTTP Error {response.status_code} for url {response.url}: {response.text}")
         self._token = response.json().get("access_token")
         return self._token
 
@@ -64,7 +65,8 @@ class BancoDoBrasilAdapter(BaseBankAdapter):
             cert=(self.cert_auth.cert_path, self.cert_auth.key_path),
             verify=self.cert_auth.verify,
         )
-        response.raise_for_status()
+        if response.status_code >= 400:
+            raise Exception(f"HTTP Error {response.status_code} for url {response.url}: {response.text}")
         return safe_json_loads(response.text)
 
     def list_bank_slips(self, filters: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
@@ -84,7 +86,8 @@ class BancoDoBrasilAdapter(BaseBankAdapter):
             cert=(self.cert_auth.cert_path, self.cert_auth.key_path),
             verify=self.cert_auth.verify,
         )
-        response.raise_for_status()
+        if response.status_code >= 400:
+            raise Exception(f"HTTP Error {response.status_code} for url {response.url}: {response.text}")
         return safe_json_loads(response.text)
 
     def cancel_bank_slip(self, bank_slip_id: str, payload: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
@@ -107,7 +110,8 @@ class BancoDoBrasilAdapter(BaseBankAdapter):
             cert=(self.cert_auth.cert_path, self.cert_auth.key_path),
             verify=self.cert_auth.verify,
         )
-        response.raise_for_status()
+        if response.status_code >= 400:
+            raise Exception(f"HTTP Error {response.status_code} for url {response.url}: {response.text}")
         return safe_json_loads(response.text)
 
     def edit_bank_slip(self, bank_slip_id: str, payload: Dict[str, Any]) -> Dict[str, Any]:
@@ -128,5 +132,6 @@ class BancoDoBrasilAdapter(BaseBankAdapter):
             cert=(self.cert_auth.cert_path, self.cert_auth.key_path),
             verify=self.cert_auth.verify,
         )
-        response.raise_for_status()
+        if response.status_code >= 400:
+            raise Exception(f"HTTP Error {response.status_code} for url {response.url}: {response.text}")
         return safe_json_loads(response.text)

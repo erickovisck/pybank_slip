@@ -62,7 +62,8 @@ class SantanderAdapter(BaseBankAdapter):
             auth=(self.credentials.client_id, self.credentials.client_secret),
             **cert_args
         )
-        response.raise_for_status()
+        if response.status_code >= 400:
+            raise Exception(f"HTTP Error {response.status_code} for url {response.url}: {response.text}")
         self._token = response.json().get("access_token")
         return self._token
 
@@ -87,7 +88,8 @@ class SantanderAdapter(BaseBankAdapter):
             cert_args['verify'] = self.cert_auth.verify
             
         response = requests.post(url=url, json=payload, headers=headers, **cert_args)
-        response.raise_for_status()
+        if response.status_code >= 400:
+            raise Exception(f"HTTP Error {response.status_code} for url {response.url}: {response.text}")
         return safe_json_loads(response.text)
 
     def list_bank_slips(self, filters: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
@@ -114,7 +116,8 @@ class SantanderAdapter(BaseBankAdapter):
             cert_args['verify'] = self.cert_auth.verify
             
         response = requests.patch(url=url, json=payload, headers=headers, **cert_args)
-        response.raise_for_status()
+        if response.status_code >= 400:
+            raise Exception(f"HTTP Error {response.status_code} for url {response.url}: {response.text}")
         return safe_json_loads(response.text)
 
     # Santander Specific Methods
@@ -133,7 +136,8 @@ class SantanderAdapter(BaseBankAdapter):
             cert_args['verify'] = self.cert_auth.verify
             
         response = requests.post(url=url, json=payload, headers=headers, **cert_args)
-        response.raise_for_status()
+        if response.status_code >= 400:
+            raise Exception(f"HTTP Error {response.status_code} for url {response.url}: {response.text}")
         return safe_json_loads(response.text)
 
     def list_workspaces(self) -> Dict[str, Any]:
@@ -149,7 +153,8 @@ class SantanderAdapter(BaseBankAdapter):
             cert_args['verify'] = self.cert_auth.verify
             
         response = requests.get(url=url, headers=headers, **cert_args)
-        response.raise_for_status()
+        if response.status_code >= 400:
+            raise Exception(f"HTTP Error {response.status_code} for url {response.url}: {response.text}")
         return safe_json_loads(response.text)
 
     def delete_workspace(self, workspace_id: str) -> None:
@@ -165,7 +170,8 @@ class SantanderAdapter(BaseBankAdapter):
             cert_args['verify'] = self.cert_auth.verify
             
         response = requests.delete(url=url, headers=headers, **cert_args)
-        response.raise_for_status()
+        if response.status_code >= 400:
+            raise Exception(f"HTTP Error {response.status_code} for url {response.url}: {response.text}")
 
     def create_workspace(self, payload: dict) -> dict:
         token = self._get_token()
