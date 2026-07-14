@@ -48,7 +48,7 @@ class BancoDoBrasilAdapter(BaseBankAdapter):
         token = self._get_token()
         # Ensure the query string uses the correct app_key variable as defined in the credentials
         app_key_qs = f"?gw-dev-app-key={self.credentials.app_key}"
-        url = f"{self.base_url}/boletos{app_key_qs}"
+        url = f"{self.base_url}{self.route_bank_slips}{app_key_qs}"
         
         headers = {
             "Authorization": f"Bearer {token}",
@@ -69,7 +69,7 @@ class BancoDoBrasilAdapter(BaseBankAdapter):
     def list_bank_slips(self, filters: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         token = self._get_token()
         app_key_qs = f"?gw-dev-app-key={self.credentials.app_key}"
-        url = f"{self.base_url}/boletos{app_key_qs}"
+        url = f"{self.base_url}{self.route_bank_slips}{app_key_qs}"
         
         headers = {
             "Authorization": f"Bearer {token}",
@@ -88,7 +88,7 @@ class BancoDoBrasilAdapter(BaseBankAdapter):
 
     def cancel_bank_slip(self, bank_slip_id: str, payload: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         token = self._get_token()
-        url = f"{self.base_url}/boletos/{bank_slip_id}/baixar"
+        url = f"{self.base_url}{self.route_bank_slips}/{bank_slip_id}/baixar"
         
         headers = {
             "Authorization": f"Bearer {token}",
@@ -112,7 +112,7 @@ class BancoDoBrasilAdapter(BaseBankAdapter):
     def edit_bank_slip(self, bank_slip_id: str, payload: Dict[str, Any]) -> Dict[str, Any]:
         token = self._get_token()
         app_key_qs = f"?gw-dev-app-key={self.credentials.app_key}"
-        url = f"{self.base_url}/boletos/{bank_slip_id}{app_key_qs}"
+        url = f"{self.base_url}{self.route_bank_slips}/{bank_slip_id}{app_key_qs}"
         
         headers = {
             "Authorization": f"Bearer {token}",
