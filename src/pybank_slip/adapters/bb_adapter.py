@@ -19,10 +19,8 @@ class BancoDoBrasilAdapter(BaseBankAdapter):
     Bank slip adapter for Banco do Brasil API V2.
     """
 
-    def __init__(self, credentials: OAuthCredentials, base_url: str, cert_auth: CertificateAuth):
-        self.credentials = credentials
-        self.base_url = base_url.rstrip('/')
-        self.cert_auth = cert_auth
+    def __init__(self, credentials: OAuthCredentials, environment: str = 'production', cert_auth: Optional[CertificateAuth] = None):
+        super().__init__(credentials, environment, cert_auth)
         self._token = None
 
     def _get_token(self) -> str:

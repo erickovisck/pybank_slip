@@ -13,7 +13,7 @@ class BankSlipManager:
     def get_adapter(
         bank_code: str, 
         credentials: OAuthCredentials, 
-        environment: str = 'production',
+        environment: str,
         cert_auth: Optional[CertificateAuth] = None
     ) -> BaseBankAdapter:
         """
